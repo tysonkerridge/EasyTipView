@@ -92,8 +92,9 @@ public extension EasyTipView {
     public func show(animated: Bool = true, forView view: UIView, withinSuperview superview: UIView? = nil) {
         
         precondition(superview == nil || view.hasSuperview(superview!), "The supplied superview <\(superview!)> is not a direct nor an indirect superview of the supplied reference view <\(view)>. The superview passed to this method should be a direct or an indirect superview of the reference view. To display the tooltip within the main window, ignore the superview parameter.")
+        precondition(EasyTipView.getFallbackSuperview != nil, "The fallback superview accessor hasn't been set. Set the EasyTipView.getFallbackSuperview property to return a UIView which could be considered the first superview in the hierarchy. For normal applications, that would be UIApplication.shared.windows.first!")
         
-        let superview = superview ?? UIApplication.shared.windows.first!
+        let superview = superview ?? EasyTipView.getFallbackSuperview()
         
         let initialTransform = preferences.animating.showInitialTransform
         let finalTransform = preferences.animating.showFinalTransform
@@ -279,6 +280,7 @@ open class EasyTipView: UIView {
     // MARK: - Static variables -
     
     public static var globalPreferences = Preferences()
+    public static var getFallbackSuperview: (() -> UIView)!
     
     // MARK:- Initializer -
     
